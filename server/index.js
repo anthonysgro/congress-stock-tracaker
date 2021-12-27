@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(morgan("dev"));
 
 // Api Routes
-app.use("/api/nancy", nancy);
+app.use("/api", nancy);
 
 // Send the app
 app.get("/", (req, res) => {
