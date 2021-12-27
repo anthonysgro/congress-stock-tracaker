@@ -2,14 +2,10 @@ const express = require("express");
 const router = express.Router();
 const JSZip = require("jszip");
 const axios = require("axios");
-const crawler = require("crawler-request");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
+const downloadFile = require("../helper-functions/downloadFile");
 
-function ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint8Array(buf));
-}
-
-router.get("/", async (req, res, next) => {
+router.get("/nancy", async (req, res, next) => {
     try {
         const CONGRESSIONAL_STOCK_DISCLOSURES_URL =
             "https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2021FD.ZIP";
@@ -56,23 +52,65 @@ router.get("/", async (req, res, next) => {
                 // Find Nancy
                 .filter(
                     ({ last, first }) => first === "Nancy" && last === "Pelosi",
-                )
-                // Get the report for each documentId
-                .forEach(async (target) => {
-                    console.log("\n");
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-                    console.log("\n");
+                );
 
+        // Download and write all of the PDFs for the periodic transaction reports
+        await Promise.all(
+            congressionalStockDisclosuresArray.map(
+                ({ last, first, docID, year }) => {
                     const periodicTransactionReportUrl = `${
                         PERIODIC_TRANSACTION_REPORT_URL_TEMPLATE +
-                        target.docID +
+                        docID +
                         ".pdf"
                     }`;
 
-                    console.log(periodicTransactionReportUrl);
-                });
+                    downloadFile(
+                        periodicTransactionReportUrl,
+                        `./public/output/${year}-${last}-${first}-${docID}.pdf`,
+                    )
+                        .then((val) =>
+                            console.log(
+                                `\nSuccess downloading and writing ${periodicTransactionReportUrl}`,
+                            ),
+                        )
+                        .catch((err) =>
+                            console.error(
+                                `\ndError downloading or writing ${periodicTransactionReportUrl}: \n ${err}`,
+                            ),
+                        );
+                },
+            ),
+        );
+        // .forEach(async ({ last, first, docID, year }) => {
+        //     const periodicTransactionReportUrl = `${
+        //         PERIODIC_TRANSACTION_REPORT_URL_TEMPLATE +
+        //         docID +
+        //         ".pdf"
+        //     }`;
+
+        //
+        // });
+
+        // const { data: file } = await axios.get(periodicTransactionReportUrl, {
+        //     responseType: "stream",
+        // });
+
+        // Get the report for each documentId
+        // .forEach(async (target) => {
+        //     console.log("\n");
+        //     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //     console.log("\n");
+
+        //     const periodicTransactionReportUrl = `${
+        //         PERIODIC_TRANSACTION_REPORT_URL_TEMPLATE +
+        //         target.docID +
+        //         ".pdf"
+        //     }`;
+
+        //     console.log(periodicTransactionReportUrl);
+        // });
 
         // console.log(congressionalStockDisclosuresArray);
 
