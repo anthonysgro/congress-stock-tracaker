@@ -7,7 +7,7 @@ class App extends Component {
     }
 
     render() {
-        return "Welcome to Tamanna's Project!";
+        return "Welcome to the stock tracker!";
     }
 }
 

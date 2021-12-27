@@ -1,5 +1,5 @@
 {
-    "name": "tamannaproject",
+    "name": "CongressTracker",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
@@ -15,7 +15,11 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "axios": "^0.24.0",
+        "crawler-request": "^1.2.2",
         "express": "^4.17.1",
+        "jszip": "^3.7.1",
+        "pdfjs-dist": "^2.12.313",
         "pg": "^8.6.0",
         "react": "^17.0.2",
         "react-redux": "^7.2.4",
