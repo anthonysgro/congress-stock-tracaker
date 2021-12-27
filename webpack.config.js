@@ -8,6 +8,7 @@ const webpackConfig = {
         path: path.join(__dirname, "./public/dist"),
         filename: "main.js",
     },
+    target: "node",
     module: {
         rules: [
             {
