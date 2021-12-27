@@ -81,38 +81,6 @@ router.get("/nancy", async (req, res, next) => {
                 },
             ),
         );
-        // .forEach(async ({ last, first, docID, year }) => {
-        //     const periodicTransactionReportUrl = `${
-        //         PERIODIC_TRANSACTION_REPORT_URL_TEMPLATE +
-        //         docID +
-        //         ".pdf"
-        //     }`;
-
-        //
-        // });
-
-        // const { data: file } = await axios.get(periodicTransactionReportUrl, {
-        //     responseType: "stream",
-        // });
-
-        // Get the report for each documentId
-        // .forEach(async (target) => {
-        //     console.log("\n");
-        //     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        //     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        //     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        //     console.log("\n");
-
-        //     const periodicTransactionReportUrl = `${
-        //         PERIODIC_TRANSACTION_REPORT_URL_TEMPLATE +
-        //         target.docID +
-        //         ".pdf"
-        //     }`;
-
-        //     console.log(periodicTransactionReportUrl);
-        // });
-
-        // console.log(congressionalStockDisclosuresArray);
 
         res.send({ hi: "yay" });
     } catch (err) {

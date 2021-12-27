@@ -11,6 +11,7 @@ module.exports = async function downloadFile(fileUrl, outputLocationPath) {
     }).then((response) => {
         return new Promise((resolve, reject) => {
             response.data.pipe(writer);
+
             let error = null;
             writer.on("error", (err) => {
                 error = err;
@@ -21,8 +22,8 @@ module.exports = async function downloadFile(fileUrl, outputLocationPath) {
                 if (!error) {
                     resolve(true);
                 }
-                //no need to call the reject here, as it will have been called in the
-                //'error' stream;
+                // no need to call the reject here, as it will have been called in the
+                // 'error' stream;
             });
         });
     });
