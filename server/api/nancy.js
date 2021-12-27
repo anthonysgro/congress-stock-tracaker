@@ -5,7 +5,7 @@ const axios = require("axios");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
 const downloadFile = require("../helper-functions/downloadFile");
 
-router.get("/nancy", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
     try {
         const CONGRESSIONAL_STOCK_DISCLOSURES_URL =
             "https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2021FD.ZIP";
