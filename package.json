@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "npm i npm run build & node server",
+        "start": "npm run build & node server",
         "build": "webpack --mode=production",
         "start:dev": "npm run start-server & npm run build-watch",
         "build-watch": "webpack -w --mode=development",
