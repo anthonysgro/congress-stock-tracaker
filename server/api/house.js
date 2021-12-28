@@ -4,14 +4,12 @@ const axios = require("axios");
 const date = require("date-and-time");
 const { badSyntax } = require("../errors");
 const {
-    filterDataFileKeysByDate,
-    bulkFetchHouseTradingData,
-} = require("../helper-functions");
-
-const {
     lowercaseAllObjectKeys,
     parseXMLtoJSON,
     fetchHouseStockDataFileKeys,
+    filterDataFileKeysByDate,
+    bulkFetchHouseTradingData,
+    analyzeFinancialDisclosureData,
 } = require("../helper-functions");
 
 router.get("/", async (req, res, next) => {
@@ -40,22 +38,25 @@ router.get("/date/lastmonth", async (req, res, next) => {
             stockDataFileKeys,
         );
 
-        res.send(stockDataFiles);
+        const stocksTraded = analyzeFinancialDisclosureData(stockDataFiles);
+
+        res.send(stocksTraded);
     } catch (err) {
         next(err);
     }
 });
 
-router.get("/date/month", async (req, res, next) => {
+router.get("/date", async (req, res, next) => {
     try {
         const houseStockDataFileKeys = await fetchHouseStockDataFileKeys();
 
         const month = parseInt(req.query.month);
         const year = parseInt(req.query.year);
+        const day = req.query.day ? parseInt(req.query.day) : 0;
 
         const thisYear = new Date().getFullYear();
-        const startDate = new Date(year, month, 0);
-        const endDate = new Date(year, month - 1, 1);
+        const startDate = new Date(year, month - 1, day);
+        const endDate = new Date(year, month - 2, day);
 
         // Validate input
         if (!month || !year) throw badSyntax("Provide a year and month.");
@@ -68,8 +69,6 @@ router.get("/date/month", async (req, res, next) => {
             startDate,
             endDate,
         );
-
-        console.log(stockDataFileKeys);
 
         // Fetch the actual trading data
         const stockDataFiles = await bulkFetchHouseTradingData(
