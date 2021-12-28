@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 
-module.exports = async function downloadFile(fileUrl, outputLocationPath) {
+module.exports = downloadAndWriteFile = async (fileUrl, outputLocationPath) => {
     const writer = fs.createWriteStream(outputLocationPath);
 
     return axios({

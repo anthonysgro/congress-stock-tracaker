@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const nancyAPI = require("./nancy");
-const s3exAPI = require("./s3ex");
+const house = require("./house");
 
 router.use("/nancy", nancyAPI);
-router.use("/s3ex", s3exAPI);
+router.use("/house", house);
 
 module.exports = router;

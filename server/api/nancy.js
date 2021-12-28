@@ -3,7 +3,10 @@ const router = express.Router();
 const JSZip = require("jszip");
 const axios = require("axios");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
-const downloadFile = require("../helper-functions/downloadFile");
+const {
+    downloadAndWriteFile,
+    lowercaseFirstLetter,
+} = require("../helper-functions");
 
 router.get("/", async (req, res, next) => {
     try {
@@ -31,28 +34,26 @@ router.get("/", async (req, res, next) => {
         const dataKeys = congressionalStockDisclosuresRawText
             .split("\n")[0]
             .split(/[\t,\r]+/)
-            .map((key) => key.charAt(0).toLowerCase() + key.slice(1));
+            .map((key) => lowercaseFirstLetter(key));
 
         // Turn all the congress members in the file into objects
         const congressionalStockDisclosuresArray =
-            congressionalStockDisclosuresRawText
-                .split("\n")
-                .map((line) => {
-                    const lineData = line.split("\t");
+            congressionalStockDisclosuresRawText.split("\n").map((line) => {
+                const lineData = line.split("\t");
 
-                    // Convert each line to an object
-                    return lineData.reduce((acc, cur, i) => {
-                        // We are removing the "\r" char at the end of the DocId
-                        acc[dataKeys[i]] =
-                            dataKeys[i] === "docID" ? cur.split("\r")[0] : cur;
+                // Convert each line to an object
+                return lineData.reduce((acc, cur, i) => {
+                    // We are removing the "\r" char at the end of the DocId
+                    acc[dataKeys[i]] =
+                        dataKeys[i] === "docID" ? cur.split("\r")[0] : cur;
 
-                        return acc;
-                    }, {});
-                })
-                // Find Nancy
-                .filter(
-                    ({ last, first }) => first === "Nancy" && last === "Pelosi",
-                );
+                    return acc;
+                }, {});
+            });
+        // Find Nancy
+        // .filter(
+        //     ({ last, first }) => first === "Nancy" && last === "Pelosi",
+        // );
 
         // Download and write all of the PDFs for the periodic transaction reports
         await Promise.all(
@@ -64,7 +65,7 @@ router.get("/", async (req, res, next) => {
                         ".pdf"
                     }`;
 
-                    downloadFile(
+                    downloadAndWriteFile(
                         periodicTransactionReportUrl,
                         `./public/output/${year}-${last}-${first}-${docID}.pdf`,
                     )
@@ -75,7 +76,7 @@ router.get("/", async (req, res, next) => {
                         )
                         .catch((err) =>
                             console.error(
-                                `\ndError downloading or writing ${periodicTransactionReportUrl}: \n ${err}`,
+                                `\nError downloading or writing ${periodicTransactionReportUrl} : \n ${err}`,
                             ),
                         );
                 },
@@ -84,7 +85,7 @@ router.get("/", async (req, res, next) => {
 
         res.send({ hi: "yay" });
     } catch (err) {
-        next(err);
+        // next(err);
     }
 });
 
